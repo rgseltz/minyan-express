@@ -15,6 +15,6 @@ CREATE TABLE locations (
     city TEXT NOT NULL, 
     zip INTEGER,
     -- coordinates 
-    is_public BOOLEAN,
+    is_public BOOLEAN NOT NULL DEFAULT true,
     location_capacity_limit INTEGER DEFAULT 15 
 );
