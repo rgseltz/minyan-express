@@ -8,3 +8,7 @@ INSERT INTO locations (nick_name, street, number, city, zip, is_public, location
 VALUES ('airport synagogue', 'Ben Gurion Airport', 1, 'Tel Aviv', 7015001, 'true', 35), 
 ('kinar galilee hotel synagogue', 'צפון מזרח הכנרת רמות,',1, 'Ramot', 12490, 'true', 25);
 
+INSERT INTO events (start_time, end_time, location_id, current_capacity) 
+VALUES ('9:00', '9:45', 1, 1);
+
+INSERT INTO reservations (user_id, event_id) VALUES (1, 1);

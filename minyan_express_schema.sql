@@ -22,8 +22,8 @@ CREATE TABLE locations (
 
 CREATE TABLE events (
     id SERIAL PRIMARY KEY,
-    start_time TIME,
-    end_time TIME,
+    start_time TIME NOT NULL,
+    end_time TIME NOT NULL,
     location_id INTEGER NOT NULL
         REFERENCES locations ON DELETE CASCADE,
     current_capacity INTEGER NOT NULL DEFAULT 0,
