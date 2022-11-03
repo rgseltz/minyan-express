@@ -26,12 +26,12 @@ CREATE TABLE events (
     location_id INTEGER NOT NULL
         REFERENCES locations ON DELETE CASCADE,
     current_capacity INTEGER NOT NULL DEFAULT 0,
-    max_capacity INTEGER; --nice to have for later 
-)
+    max_capacity INTEGER --nice to have for later 
+);
 
 CREATE TABLE reservations (
     user_id INTEGER NOT NULL REFERENCES users 
         ON DELETE CASCADE,
     event_id INTEGER NOT NULL REFERENCES events 
-        ON DELETE CASCADE;
-)
+        ON DELETE CASCADE
+);
