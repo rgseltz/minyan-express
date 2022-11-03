@@ -7,8 +7,8 @@ UserB
   a) We will insert into Event table. Aka sql insert
     - Event Table Example: location_id:Airport, start_time: 930, end_time: 940, event_id: 1, current_capacity: 15
 
-  b) UserA that creates event will automatically be added to Reserved Event table. Aka sql insert
-    - Reserved Event Table example
+  b) UserA that creates event will automatically be added to Reservation table. Aka sql insert
+    - Reservations Table example
       user_id: UserA
       event_id: 1
 
