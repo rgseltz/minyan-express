@@ -17,11 +17,12 @@ router.post('/register', async (req, res, next) => {
             let errorList = validator.errors.map(e => e.stack);
             throw new expressError(errorList, 400);
         };
-        console.log('valid request');
+        console.log('valid data schema');
 
-        const newUser = new User({ ...req.body, isAdmin: false });
+        const newUser = await User.register({ ...req.body, isAdmin: false });
         const token = createToken(newUser);
-        return res.json({ token });
+        console.log(token);
+        return res.status(201).json({ token });
     } catch (err) {
         return next(err);
     }
