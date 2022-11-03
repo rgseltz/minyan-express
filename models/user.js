@@ -2,6 +2,7 @@ const db = require('../db');
 const expressError = require('../expressError');
 const { BCRYPT_WORK_FACTOR } = require('../config');
 const bcrypt = require('bcrypt');
+const ExpressError = require('../expressError');
 // const sqlPartialUpdate = require('../helpers/sqlPartialUpdate')
 
 /* User model interacts with database to create/view/update/delete information on the users table**/
@@ -25,6 +26,21 @@ class User {
         );
         console.log(results.rows[0]);
         return results.rows[0];
+    }
+
+    static async authenticate({ username, password }) {
+        /*check if username exists and throw password if no user, if user exists, compare password with hashed bcrypt password and return user-- first deleting password from user property (so it will NOT be included in body of jwtoken)**/
+        const results = await db.query(
+            `SELECT username, password FROM users WHERE username = $1`, [username]
+        );
+        const user = results.rows[0];
+        if (!user) throw new expressError('user does not exist', 400);
+        const isValid = bcrypt.compare(password, user.password);
+        if (isValid) {
+            delete user.password;
+            return user;
+        }
+        return new expressError('Invalid username/password', 401);
     }
 }
 

@@ -3,6 +3,7 @@ const expressError = require('../expressError');
 const jsonschema = require('jsonschema'); //for validation of data to api
 const { createToken } = require('../helpers/tokens'); //to create token once validated
 const userRegisterSchema = require('../json_schemas/userRegister.json');
+const userAuthSchema = require('../json_schemas/userAuth');
 const User = require('../models/user');
 const router = new express.Router();
 
@@ -28,5 +29,23 @@ router.post('/register', async (req, res, next) => {
     }
 })
 
+/* POST auth/token 
+    validates user token and RETURNS token to authenticate future requests and stored on front end react app.
+    req.body must include {username, password} returns {token}**/
+router.post('/token', async (req, res, next) => {
+    try {
+        const validator = jsonschema.validate(req.body, userAuthSchema);
+        if (!validator.valid) {
+            let errorList = validator.errors.map(e => e.stack);
+            throw new expressError(errorList, 400);
+        }
+
+        const user = await User.authenticate({ ...req.body });
+        const token = createToken(user);
+        return res.json({ token });
+    } catch (err) {
+        return next(err);
+    }
+})
 
 module.exports = router;
