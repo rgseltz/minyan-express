@@ -1,0 +1,72 @@
+Users
+
+  serialized_id
+  email
+  username
+  password
+
+  first_name
+  last_name
+
+Location
+
+  id?
+  nick_name
+  street
+  number
+  city
+  zip
+  coordinates
+  is_public => boolean
+  location_limit_capacity: 10
+
+  Private:
+    Consider as a nice to have, if private then user can have as many services at their location
+
+  Seed this data and only choose safe locations
+
+Possible Group Idea. Nice to have
+    Group, location, time, and user is the primary_key
+      group_id=1, location_id=10, user_id=>Ryan, time=morning
+      group_id=2, location_id=10, user_id=>Calvin, time=morning
+
+Possible Time ideas. Idea #3 is good for now.
+    Idea 1:
+      Static Time Table, create 30min timeslots throught the day
+        9am - 930am
+        930am - 10am
+        1030am - 11am
+    Idea 2:
+      Dynamic table reserve 10min slot per event
+      Create a table that locks in times for user, user must submit time 1st before creating event or filling out other data, we will always check lock table before giving the user the access to create event
+    Idea 3:
+      No validation user tell us the time and date and we just insert
+
+
+Event
+  id
+  start_time
+  end_time
+  date ? may not if we use timestamp type
+  location_id
+  current_capacity: the number of people we currently have, default to 0
+  max_capacity: default 15, not needed for now
+
+
+  Consider start_time and end_time, timestamp - 9:30 - 9: 40 (user will dictate the start and end time)
+  Constraint make timeslots unique for location to avoid same times
+  Constraint ensure that event capacity doesn't exceed
+  Every event minimum of 10 to exist
+
+Reserved Event
+  user_id
+  event_id
+  
+
+
+Constraint
+  - User cant attend 2 events at the same time
+
+  User planner table to help us with
+
+  location_id:Airport, start_time: 930, end_time: 940, id: 2

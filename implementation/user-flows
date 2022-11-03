@@ -1,0 +1,30 @@
+UserA
+UserB
+
+1) Ryan the dev will add safe locations to the Location Table
+2) UserA will login and create an event
+
+  a) We will insert into Event table. Aka sql insert
+    - Event Table Example: location_id:Airport, start_time: 930, end_time: 940, event_id: 1, current_capacity: 15
+
+  b) UserA that creates event will automatically be added to Reserved Event table. Aka sql insert
+    - Reserved Event Table example
+      user_id: UserA
+      event_id: 1
+
+  c) We will need to increment the current capacity in the Event table. Aka sql update on event current_capacity
+
+3) UserB can go and join reserved events as long as there is room available
+
+  a) Display the events to the user and their time. SQL select from Event table
+
+  b) UserB who wants to join an event, will select the desired event they want to join
+
+  c) As user clicks on desired event. We will add the user to the Reserved Event Table. Aka SQL insert
+    Reserved Event Table example
+    user_id: UserB
+    event_id: 1
+  
+  d)Increment the current capacity on the event table
+
+4) What if user decides to go back and reserve another event? Solve later. Nice to have.
