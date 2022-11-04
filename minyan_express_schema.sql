@@ -11,8 +11,8 @@ CREATE TABLE users (
 CREATE TABLE locations (
     id SERIAL PRIMARY KEY,
     nick_name TEXT,
-    street TEXT NOT NULL, 
-    number INTEGER NOT NULL,
+    street_name TEXT NOT NULL, 
+    street_number VARCHAR(10) NOT NULL,
     city TEXT NOT NULL, 
     zip INTEGER,
     -- coordinates? 
