@@ -48,7 +48,7 @@ Event
   start_time
   end_time
   date ? may not if we use timestamp type
-  location_id
+  location_id FK ref locations table
   current_capacity: the number of people we currently have, default to 0
   max_capacity: default 15, not needed for now
 
@@ -59,7 +59,7 @@ Event
   Every event minimum of 10 to exist
 
 Reserved Event
-  user_id
+  user_id 
   event_id
   
 

@@ -34,5 +34,6 @@ CREATE TABLE reservations (
     user_id INTEGER NOT NULL REFERENCES users 
         ON DELETE CASCADE,
     event_id INTEGER NOT NULL REFERENCES events 
-        ON DELETE CASCADE
+        ON DELETE CASCADE, 
+        PRIMARY KEY(user_id, event_id)
 );
