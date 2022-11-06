@@ -17,7 +17,8 @@ CREATE TABLE locations (
     zip INTEGER,
     -- coordinates? 
     is_public BOOLEAN NOT NULL DEFAULT true,
-    location_capacity_limit INTEGER DEFAULT 15 
+    location_capacity_limit INTEGER DEFAULT 15,
+    type TEXT  
 );
 
 CREATE TABLE events (

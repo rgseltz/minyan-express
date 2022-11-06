@@ -52,7 +52,7 @@ Event
   current_capacity: the number of people we currently have, default to 0
   max_capacity: default 15, not needed for now
 
-
+  Consider duration time of each event*** is this a constraint? add directly to sql?
   Consider start_time and end_time, timestamp - 9:30 - 9: 40 (user will dictate the start and end time)
   Constraint make timeslots unique for location to avoid same times
   Constraint ensure that event capacity doesn't exceed
