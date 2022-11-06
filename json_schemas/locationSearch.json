@@ -1,0 +1,103 @@
+{
+    "$schema": "https://json-schema.org/draft/2019-09/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "default": {},
+    "title": "Root Schema",
+    "required": [
+        "locations"
+    ],
+    "properties": {
+        "locations": {
+            "type": "array",
+            "default": [],
+            "title": "The locations Schema",
+            "items": {
+                "type": "object",
+                "title": "A Schema",
+                "required": [],
+                "properties": {
+                    "handle": {
+                        "type": "string",
+                        "title": "The handle Schema",
+                        "examples": [
+                            "airport synagogue",
+                            "kinar galilee hotel synagogue",
+                            "waldorf-jerusalem",
+                            "ritz-hertzliya"
+                        ]
+                    },
+                    "streetName": {
+                        "type": "string",
+                        "title": "The streetName Schema",
+                        "examples": [
+                            "Ben Gurion Airport",
+                            "צפון מזרח הכנרת רמות,",
+                            "Gershon Agron Street",
+                            "Ha-Shunit Street"
+                        ]
+                    },
+                    "streetNum": {
+                        "type": "string",
+                        "title": "The streetNum Schema",
+                        "examples": [
+                            "1",
+                            "26-28",
+                            "4"
+                        ]
+                    },
+                    "city": {
+                        "type": "string",
+                        "title": "The city Schema",
+                        "examples": [
+                            "Tel Aviv",
+                            "Ramot",
+                            "Jerusalem",
+                            "Herzliya"
+                        ]
+                    },
+                    "zip": {
+                        "type": "integer",
+                        "title": "The zip Schema",
+                        "examples": [
+                            7015001,
+                            12490,
+                            9419008,
+                            4655202
+                        ]
+                    }
+                },
+                "examples": [
+                    {
+                        "handle": "airport synagogue",
+                        "streetName": "Ben Gurion Airport",
+                        "streetNum": "1",
+                        "city": "Tel Aviv",
+                        "zip": 7015001
+                    },
+                    {
+                        "handle": "kinar galilee hotel synagogue",
+                        "streetName": "צפון מזרח הכנרת רמות,",
+                        "streetNum": "1",
+                        "city": "Ramot",
+                        "zip": 12490
+                    },
+                    {
+                        "handle": "waldorf-jerusalem",
+                        "streetName": "Gershon Agron Street",
+                        "streetNum": "26-28",
+                        "city": "Jerusalem",
+                        "zip": 9419008
+                    },
+                    {
+                        "handle": "ritz-hertzliya",
+                        "streetName": "Ha-Shunit Street",
+                        "streetNum": "4",
+                        "city": "Herzliya",
+                        "zip": 4655202
+                    }
+                ]
+            }
+        }
+    }
+}

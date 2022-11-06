@@ -1,0 +1,64 @@
+{
+    "$schema": "https://json-schema.org/draft/2019-09/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "default": {},
+    "title": "Root Schema",
+    "required": [
+        "startTime",
+        "endTime",
+        "location",
+        "currentCapacity"
+    ],
+    "properties": {
+        "startTime": {
+            "type": "string",
+            "default": "",
+            "title": "The startTime Schema",
+            "examples": [
+                "string"
+            ]
+        },
+        "endTime": {
+            "type": "string",
+            "default": "",
+            "title": "The endTime Schema",
+            "examples": [
+                "string"
+            ]
+        },
+        "locationId": {
+            "type": "string",
+            "default": "",
+            "title": "The location Schema",
+            "examples": [
+                "integer"
+            ]
+        },
+        "currentCapacity": {
+            "type": "string",
+            "default": "",
+            "title": "The currentCapacity Schema",
+            "examples": [
+                "integer"
+            ]
+        },
+        "maxCapacity": {
+            "type": "string",
+            "default": "",
+            "title": "The maxCapacity Schema",
+            "examples": [
+                "integer"
+            ]
+        }
+    },
+    "examples": [
+        {
+            "startTime": "string",
+            "endTime": "string",
+            "locationId": "integer",
+            "currentCapacity": "integer",
+            "maxCapacity": "integer"
+        }
+    ]
+}
