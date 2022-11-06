@@ -5,7 +5,7 @@ const Location = require('../models/location');
 const jsonschema = require('jsonschema');
 const locationSearchSchema = require('../json_schemas/locationSearch.json');
 
-/**GET /locations with optional search parameters {handle, streetName, streetNum, city, zip, isPublic}
+/**GET /locations with optional search parameters {handle, streetName, streetNum, city, zip, isPublic, type}
 */
 router.get('/', async (req, res, next) => {
     try {
@@ -25,6 +25,18 @@ router.get('/', async (req, res, next) => {
         return res.json({ locations });
     } catch (err) {
         return next(err);
+    }
+})
+
+/** GET /[locationID] => {location}
+ * returns {id, handle, streetName, streetNum, city, zip, isPublic, type}
+ */
+router.get('/:id', async (req, res, next) => {
+    try {
+        const location = await Location.get(req.params.id);
+        return res.json({ location });
+    } catch (err) {
+        next(err);
     }
 
 })

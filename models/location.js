@@ -52,6 +52,19 @@ class Location {
         const locations = await db.query(query, queryValues);
         return locations.rows;
     }
+
+    /**Get location with specific ID that returns information about location
+     *      returns {id, streetName, streetNum, handle, zip, isPublic, type}
+     */
+    static async get(id) {
+        //check that ID actually exists//
+        const result = await db.query(
+            `SELECT id, nick_name FROM locations WHERE id = $1`, [id]
+        );
+        const location = result.rows[0];
+        if (!location) return new expressError('Location does not exist', 404);
+        return location;
+    }
 }
 
 module.exports = Location;
