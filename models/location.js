@@ -1,6 +1,5 @@
 const db = require('../db');
 const expressError = require('../expressError');
-const ExpressError = require('../expressError');
 const sqlPartialUpdate = require('../helpers/sql')
 
 class Location {
@@ -8,7 +7,8 @@ class Location {
 
     static async findAll(searchParams = {}) {
         let query =
-            `SELECT 
+            `SELECT
+                id, 
                 nick_name AS "handle", 
                 street_name AS "streetName", 
                 street_number AS "streetNum", 
