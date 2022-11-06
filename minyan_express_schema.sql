@@ -28,7 +28,7 @@ CREATE TABLE events (
     location_id INTEGER NOT NULL
         REFERENCES locations ON DELETE CASCADE,
     current_capacity INTEGER NOT NULL DEFAULT 0,
-    max_capacity INTEGER --nice to have for later 
+    max_capacity INTEGER DEFAULT 30 --nice to have for later 
 );
 
 CREATE TABLE reservations (
