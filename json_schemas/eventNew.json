@@ -6,7 +6,8 @@
     "title": "Root Schema",
     "required": [
         "startTime",
-        "endTime"
+        "endTime",
+        "serviceType"
     ],
     "properties": {
         "startTime": {
@@ -25,6 +26,14 @@
                 "string"
             ]
         },
+        "serviceType": {
+            "type": "string",
+            "default": "",
+            "title": "The serviceType Schema",
+            "examples": [
+                "string"
+            ]
+        },
         "maxCapacity": {
             "type": "string",
             "default": "",
@@ -38,6 +47,7 @@
         {
             "startTime": "string",
             "endTime": "string",
+            "serviceType": "string",
             "maxCapacity": "integer"
         }
     ]

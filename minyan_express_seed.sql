@@ -11,7 +11,7 @@ VALUES ('airport synagogue', 'Ben Gurion Airport', '1', 'Tel Aviv', 7015001, 'tr
 ('ritz-hertzliya', 'Ha-Shunit Street', '4', 'Herzliya', 4655202, 'true', 30, 'hotel'),
 ('gan-sacher', 'Yitzchak', '1', 'Jerusalem', 1, 'true', 300, 'park');
 
-INSERT INTO events (start_time, end_time, location_id, current_capacity) 
-VALUES ('9:00', '9:45', 1, 1);
+INSERT INTO events (start_time, end_time, service_type, location_id, current_capacity) 
+VALUES ('9:00', '9:45', 'morning', 1, 1);
 
 INSERT INTO reservations (user_id, event_id) VALUES (1, 1);
