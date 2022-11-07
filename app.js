@@ -8,6 +8,10 @@ const userRoutes = require('./routes/users');
 const locationRoutes = require('./routes/locations');
 const eventsRouter = require('./routes/events');
 const ExpressError = require('./expressError');
+const { authenticateJWT } = require('./middleware/auth');
+//global variable currentUser to keep track of which user is reserving an event//
+
+app.use(authenticateJWT);
 
 app.use(express.json());
 app.use('/auth', authRoutes);

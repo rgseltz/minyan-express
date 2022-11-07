@@ -1,4 +1,5 @@
 const express = require('express');
+const { ensureUserLoggedIn } = require('../middleware/auth');
 const expressError = require('../expressError');
 const jsonschema = require('jsonschema');
 const newEventSchema = require('../json_schemas/eventNew.json');
@@ -14,7 +15,7 @@ const router = new express.Router();
  * event should contain {startTime, endTime, date, location}
  * should return {startTime, endTime, date, location-handle}
 */
-router.post('/new/:locationId', async (req, res, next) => {
+router.post('/new/:locationId', ensureUserLoggedIn, async (req, res, next) => {
     try {
         const validator = jsonschema.validate(req.body, newEventSchema);
         if (!validator) {
@@ -24,8 +25,10 @@ router.post('/new/:locationId', async (req, res, next) => {
         req.body.currentCapacity = +req.body.currentCapacity;
         req.params.locationId = +req.params.locationId;
         const event = await Event.create(req.body, req.params.locationId);
-
-        return res.status(201).json({ data: "Added" });
+        // const reservation = await Reservation.add(userId, eventId);
+        const { eventId, locationId } = event;
+        console.log(res.locals);
+        return res.status(201).json({ data: { event } });
     } catch (err) {
         return next(err)
     }

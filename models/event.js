@@ -18,10 +18,10 @@ class Event {
         console.log(currentCapacity);
         console.log(locationId);
 
-        //PROBLEM: Overlapping times - how do I convert times and ensure that no two events occur at the same location in same time block?
+        //PROBLEM: Overlapping times - how do I convert times and ensure that no two events occur at the same location in same time block? answer: do a sql SELECT search - convert times to numbers? - make sure new event does not coincide with that location at that time. 
         const newEvent = await db.query(
             `INSERT INTO events (start_time, end_time, service_type, location_id, current_capacity) 
-             values ($1, $2, $3, $4, $5) RETURNING id AS "locationId"`, [startTime, endTime, serviceType, locationId, currentCapacity]
+             values ($1, $2, $3, $4, $5) RETURNING *`, [startTime, endTime, serviceType, locationId, currentCapacity]
         );
         console.log(newEvent.rows[0]);
         return newEvent.rows[0];

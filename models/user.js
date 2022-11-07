@@ -31,7 +31,7 @@ class User {
     static async authenticate({ username, password }) {
         /*check if username exists and throw password if no user, if user exists, compare password with hashed bcrypt password and return user-- first deleting password from user property (so it will NOT be included in body of jwtoken)**/
         const results = await db.query(
-            `SELECT username, password FROM users WHERE username = $1`, [username]
+            `SELECT id, username, password FROM users WHERE username = $1`, [username]
         );
         const user = results.rows[0];
         if (!user) throw new expressError('user does not exist', 400);
