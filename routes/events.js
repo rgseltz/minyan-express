@@ -6,6 +6,7 @@ const newEventSchema = require('../json_schemas/eventNew.json');
 // const updateEventSchema = require('../json_schemas/eventUpdate.json');
 // const eventSearchSchema = require('../json_schemas/eventSearch.json');
 const Event = require('../models/event');
+const { Reservation } = require('../models/reservation');
 const router = new express.Router();
 
 /* validate that event data was inputed into req.body correctly using json schema, then insert event into db via event.js model 
@@ -25,10 +26,13 @@ router.post('/new/:locationId', ensureUserLoggedIn, async (req, res, next) => {
         req.body.currentCapacity = +req.body.currentCapacity;
         req.params.locationId = +req.params.locationId;
         const event = await Event.create(req.body, req.params.locationId);
-        // const reservation = await Reservation.add(userId, eventId);
-        const { eventId, locationId } = event;
-        console.log(res.locals);
-        return res.status(201).json({ data: { event } });
+        console.log('res.locals', res.locals);
+        const { userId } = res.locals.user
+        console.log(userId);
+        console.log('event id', event.id)
+        const reservation = await Reservation.new(userId, event.id);
+        console.log(reservation);
+        return res.status(201).json({ data: { event, reservation } });
     } catch (err) {
         return next(err)
     }
