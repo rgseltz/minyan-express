@@ -1,5 +1,6 @@
 const express = require('express');
 const expressError = require('../expressError');
+// const {ensureUserLoggedIn} = require('../middleware/auth');
 const router = new express.Router();
 const Location = require('../models/location');
 const jsonschema = require('jsonschema');
