@@ -39,7 +39,15 @@ router.post('/new/:locationId', ensureUserLoggedIn, async (req, res, next) => {
 
 
 /**GET /events/:eventId */
-
+router.get('/:eventId', ensureUserLoggedIn, async (req, res, next) => {
+    try {
+        const { eventId } = req.params;
+        const event = await Event.find(eventId);
+        return res.json({ event });
+    } catch (err) {
+        next(err);
+    }
+})
 
 
 /** GET /events should return all events with an option to search filter params based on 
@@ -67,8 +75,20 @@ router.get(`/`, ensureUserLoggedIn, async (req, res, next) => {
  *   Update event to increment ++currentUser 
  *   Add new reservation for userId to eventId   
  */
-//  const {userId} = res.locals.user
-//  const newRes = await Reservation.new(userId, event.id)
+router.patch('/join/:eventId', ensureUserLoggedIn, async (req, res, next) => {
+    try {
+        console.log(res.locals.user);
+        const { userId } = res.locals.user;
+        const { eventId } = req.params;
+        const joinEvent = await Event.join(eventId);
+        console.log('userId', userId);
+        const newRes = await Reservation.new(userId, eventId)
+        return res.status(200).json({ data: { joinEvent, newRes } });
+    } catch (err) {
+        return next(err);
+    }
+})
+
 
 
 

@@ -45,6 +45,42 @@ class Event {
         }
     }
 
+    static async find(eventId) {
+        /**Returns information about a single specific event located by eventId
+         *   RETURNS {locationId, locationHandle, streetNum, streetName, city, zip, isPublic, locationType,
+         * serviceType, startTime, endTime}
+         */
+        //validate that event exists first
+        const checkEvent = await db.query(
+            `SELECT id FROM events WHERE id = $1`, [eventId]
+        );
+        if (checkEvent.rows[0] !== undefined) {
+            const result = await db.query(
+                `SELECT 
+                    l.id AS "locationId",
+                    l.nick_name AS "locationHandle",
+                    l.street_number AS "streetNum",
+                    l.street_name AS "streetName",
+                    l.city,
+                    l.zip, 
+                    l.is_public AS "isPublic",
+                    l.type AS "locationType",
+                    e.service_type AS "serviceType", 
+                    e.start_time AS "startTime", 
+                    e.end_time AS "endTime",
+                    e.current_capacity AS "currentCapacity",
+                    e.id AS "eventId" 
+                FROM locations AS l LEFT JOIN events AS e ON l.id = e.location_id
+                WHERE e.id = $1`, [eventId]
+            );
+            const event = result.rows[0];
+            console.log(event);
+            return event;
+        } else {
+            throw new expressError('Event does not exist', 401);
+        }
+    }
+
     static async findAll(searchParams = {}) {
         let query =
             `SELECT 
@@ -59,7 +95,8 @@ class Event {
             e.service_type AS "serviceType", 
             e.start_time AS "startTime", 
             e.end_time AS "endTime",
-            e.id AS "eventId" 
+            e.id AS "eventId",
+            e.current_capacity AS currentCapacity 
         FROM locations AS l LEFT JOIN events AS e ON l.id = e.location_id`;
         let whereExpressions = ['e.id > 0'];
         let queryValues = [];
@@ -109,6 +146,16 @@ class Event {
         }
         const results = await db.query(query, queryValues);
         return results.rows;
+    }
+    static async join(eventId) {
+        const event = await Event.find(eventId);
+        // const currentCapacity = this.currentCapacity++;
+        event.currentCapacity++
+        const updateEvent = await db.query(
+            `UPDATE events SET current_capacity = $1 WHERE id = $2 RETURNING *`,
+            [event.currentCapacity, eventId]
+        );
+        return updateEvent.rows[0];
     }
 }
 
