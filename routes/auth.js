@@ -19,10 +19,10 @@ router.post('/register', async (req, res, next) => {
             throw new expressError(errorList, 400);
         };
         console.log('valid data schema');
-
         const newUser = await User.register({ ...req.body, isAdmin: false });
+        res.locals.userId = newUser.id;
         const token = createToken(newUser);
-        console.log(token);
+        console.log(newUser);
         return res.status(201).json({ token });
     } catch (err) {
         return next(err);
@@ -39,10 +39,10 @@ router.post('/token', async (req, res, next) => {
             let errorList = validator.errors.map(e => e.stack);
             throw new expressError(errorList, 400);
         }
-
         const user = await User.authenticate({ ...req.body });
+        res.locals.userId = user.id;
         const token = createToken(user);
-        console.log(token);
+        console.log(user);
         return res.json({ token });
     } catch (err) {
         return next(err);
