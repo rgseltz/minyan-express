@@ -1,6 +1,7 @@
 const db = require('../db');
 const expressError = require('../expressError');
 const sqlPartialUpdate = require('../helpers/sql')
+const Location = require('./location');
 
 /**Related functions for events */
 
@@ -30,6 +31,59 @@ class Event {
         );
         const event = results.rows[0];
         return event;
+    }
+    static async findAll(searchParams = {}) {
+        let query =
+            `SELECT 
+            l.id AS "locationId",
+            l.nick_name AS "locationHandle",
+            l.street_number AS "streetNum",
+            l.street_name AS "streetName",
+            l.city,
+            l.zip, 
+            l.is_public AS "isPublic",
+            l.type AS "locationType",
+            e.service_type AS "serviceType", 
+            e.start_time AS "startTime", 
+            e.end_time AS "endTime",
+            e.id AS "eventId" 
+        FROM locations AS l LEFT JOIN events AS e ON l.id = e.location_id`;
+        let whereExpressions = ['e.id > 0'];
+        let queryValues = [];
+        const { locationHandle, streetNum, streetName, city, zip, isPublic, locationType, serviceType, startTime, endTime } = searchParams;
+        if (locationHandle) {
+            queryValues.push(`%${handle}%`);
+            whereExpressions.push(`nick_name ILIKE $${queryValues.length}`);
+        }
+        if (streetNum) {
+            queryValues.push(`%${streetNum}%`);
+            whereExpressions.push(`street_number ILIKE $${queryValues.length}`);
+        }
+        if (streetName) {
+            queryValues.push(`%${streetName}%`);
+            whereExpressions.push(`street_name ILIKE $${queryValues.length}`);
+        }
+        if (city) {
+            queryValues.push(`%${city}%`);
+            whereExpressions.push(`city ILIKE $${queryValues.length}`);
+        }
+        if (zip) {
+            queryValues.push(zip);
+            whereExpressions.push(`zip = $${queryValues.length}`);
+        }
+        if (isPublic) {
+            queryValues.push(isPublic);
+            whereExpressions.push(`is_public = $${queryValues.length}`);
+        }
+        if (locationType) {
+            queryValues.push(`%${locationType}%`);
+            whereExpressions.push(`type ILIKE $${queryValues.length}`);
+        }
+        if (whereExpressions.length > 0) {
+            query += " WHERE " + whereExpressions.join(" AND ")
+        }
+        const results = await db.query(query, queryValues);
+        return results.rows;
     }
 }
 
