@@ -65,7 +65,7 @@ class Event {
         let queryValues = [];
         const { locationHandle, streetNum, streetName, city, zip, isPublic, locationType, serviceType, startTime, endTime } = searchParams;
         if (locationHandle) {
-            queryValues.push(`%${handle}%`);
+            queryValues.push(`%${locationHandle}%`);
             whereExpressions.push(`nick_name ILIKE $${queryValues.length}`);
         }
         if (streetNum) {
@@ -91,6 +91,18 @@ class Event {
         if (locationType) {
             queryValues.push(`%${locationType}%`);
             whereExpressions.push(`type ILIKE $${queryValues.length}`);
+        }
+        if (serviceType) {
+            queryValues.push(`%${serviceType}%`);
+            whereExpressions.push(`service_type ILIKE $${queryValues.length}`);
+        }
+        if (startTime) {
+            queryValues.push(`%${startTime}%`);
+            whereExpressions.push(`start_time ILIKE $${queryValues.length}`);
+        }
+        if (endTime) {
+            queryValues.push(`%${endTime}%`);
+            whereExpressions.push(`end_time ILIKE $${queryValues.length}`);
         }
         if (whereExpressions.length > 0) {
             query += " WHERE " + whereExpressions.join(" AND ")
