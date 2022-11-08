@@ -19,19 +19,32 @@ class Event {
         console.log(currentCapacity);
         console.log(locationId);
 
-        //PROBLEM: Overlapping times - how do I convert times and ensure that no two events occur at the same location in same time block? answer: do a sql SELECT search - convert times to numbers? - make sure new event does not coincide with that location at that time. 
-        const newEvent = await db.query(
-            `INSERT INTO events (start_time, end_time, service_type, location_id, current_capacity) 
+        //PROBLEM: Overlapping times - how do I convert times and ensure that no two events occur at the same location in same time block? answer: do a sql SELECT search - convert times to numbers? - make sure new event does not coincide with that location at that time.
+        //attempting dummy prevalidation below:
+        const checkTime = await db.query(
+            `SELECT l.id, e.start_time, e.end_time FROM locations as l
+                LEFT JOIN events as e ON l.id = e.location_id WHERE e.start_time = $1 AND e.end_time = $2 
+                AND l.id = $3`,
+            [startTime, endTime, locationId]
+        );
+        console.log('time conflict?', checkTime.rows[0]);
+        if (!checkTime.rows[0]) {
+            await db.query(
+                `INSERT INTO events (start_time, end_time, service_type, location_id, current_capacity) 
              values ($1, $2, $3, $4, $5) RETURNING *`, [startTime, endTime, serviceType, locationId, currentCapacity]
-        );
-        const results = await db.query(
-            `SELECT l.id, l.nick_name, start_time, end_time, service_type, current_capacity
+            );
+            const results = await db.query(
+                `SELECT l.id, l.nick_name, start_time, end_time, service_type, current_capacity
                 FROM locations AS l LEFT JOIN events ON l.id = location_id WHERE location_id = $1`,
-            [locationId]
-        );
-        const event = results.rows[0];
-        return event;
+                [locationId]
+            );
+            const event = results.rows[0];
+            return event;
+        } else {
+            throw new expressError('This service conflicts with an existing service at this location', 401);
+        }
     }
+
     static async findAll(searchParams = {}) {
         let query =
             `SELECT 

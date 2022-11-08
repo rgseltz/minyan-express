@@ -9,7 +9,7 @@ class Reservation {
             `SELECT user_id, event_id FROM reservations WHERE user_id = $1 AND event_id = $2`,
             [userId, eventId]
         );
-        console.log(checkDupes.rows[0]);
+        console.log('check dupes', checkDupes.rows[0]);
         if (checkDupes.rows[0]) throw new expressError('User reservation already exists!', 400);
 
         const result = await db.query(

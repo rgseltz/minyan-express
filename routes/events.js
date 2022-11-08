@@ -27,6 +27,7 @@ router.post('/new/:locationId', ensureUserLoggedIn, async (req, res, next) => {
         req.body.currentCapacity = +req.body.currentCapacity;
         req.params.locationId = +req.params.locationId;
         const event = await Event.create(req.body, req.params.locationId);
+        if (!event) return;
         console.log('res.locals', res.locals);
         const { userId } = res.locals.user
         const reservation = await Reservation.new(userId, event.id);
