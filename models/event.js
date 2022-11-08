@@ -23,8 +23,13 @@ class Event {
             `INSERT INTO events (start_time, end_time, service_type, location_id, current_capacity) 
              values ($1, $2, $3, $4, $5) RETURNING *`, [startTime, endTime, serviceType, locationId, currentCapacity]
         );
-        console.log(newEvent.rows[0]);
-        return newEvent.rows[0];
+        const results = await db.query(
+            `SELECT l.id, l.nick_name, start_time, end_time, service_type, current_capacity
+                FROM locations AS l LEFT JOIN events ON l.id = location_id WHERE location_id = $1`,
+            [locationId]
+        );
+        const event = results.rows[0];
+        return event;
     }
 }
 

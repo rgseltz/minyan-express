@@ -13,7 +13,7 @@ const router = new express.Router();
 **/
 
 /** POST /events/new/:locationId {event} => {event} 
- * event should contain {startTime, endTime, date, location}
+ * event should contain {startTime, endTime, date, locationId}
  * should return {startTime, endTime, date, location-handle}
 */
 router.post('/new/:locationId', ensureUserLoggedIn, async (req, res, next) => {
@@ -28,14 +28,12 @@ router.post('/new/:locationId', ensureUserLoggedIn, async (req, res, next) => {
         const event = await Event.create(req.body, req.params.locationId);
         console.log('res.locals', res.locals);
         const { userId } = res.locals.user
-        console.log(userId);
-        console.log('event id', event.id)
         const reservation = await Reservation.new(userId, event.id);
-        console.log(reservation);
         return res.status(201).json({ data: { event, reservation } });
     } catch (err) {
         return next(err)
     }
 })
 
+/** GET /events should return  */
 module.exports = router;
