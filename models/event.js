@@ -11,7 +11,7 @@ class Event {
      */
     static async create(data, locationId) {
         let { startTime, endTime, serviceType, currentCapacity } = data;
-        currentCapacity++;
+        currentCapacity ? currentCapacity++ : currentCapacity = 1;
         const checkLocation = await db.query(
             `SELECT id, nick_name FROM locations WHERE id = $1`, [locationId]
         );
@@ -21,28 +21,27 @@ class Event {
 
         //PROBLEM: Overlapping times - how do I convert times and ensure that no two events occur at the same location in same time block? answer: do a sql SELECT search - convert times to numbers? - make sure new event does not coincide with that location at that time.
         //attempting dummy prevalidation below:
-        const checkTime = await db.query(
-            `SELECT l.id, e.start_time, e.end_time FROM locations as l
-                LEFT JOIN events as e ON l.id = e.location_id WHERE e.start_time = $1 AND e.end_time = $2 
-                AND l.id = $3`,
-            [startTime, endTime, locationId]
-        );
-        console.log('time conflict?', checkTime.rows[0]);
-        if (!checkTime.rows[0]) {
-            await db.query(
-                `INSERT INTO events (start_time, end_time, service_type, location_id, current_capacity) 
+        // const checkTime = await db.query(
+        //     `SELECT l.id, e.start_time, e.end_time FROM locations as lLEFT JOIN events as e ON l.id = e.location_id WHERE e.start_time = $1 AND e.end_time = $2 AND l.id = $3`,
+        //     [startTime, endTime, locationId]
+        // );
+        // console.log('time conflict?', checkTime.rows[0]);
+        // if (checkTime.rows[0] !== undefined) {
+        await db.query(
+            `INSERT INTO events (start_time, end_time, service_type, location_id, current_capacity) 
              values ($1, $2, $3, $4, $5) RETURNING *`, [startTime, endTime, serviceType, locationId, currentCapacity]
-            );
-            const results = await db.query(
-                `SELECT l.id, l.nick_name, start_time, end_time, service_type, current_capacity
-                FROM locations AS l LEFT JOIN events ON l.id = location_id WHERE location_id = $1`,
-                [locationId]
-            );
-            const event = results.rows[0];
-            return event;
-        } else {
-            throw new expressError('This service conflicts with an existing service at this location', 401);
-        }
+        );
+        const results = await db.query(
+            `SELECT e.id, l.id AS "locationId", l.nick_name, e.start_time, e.end_time, e.service_type, e.current_capacity
+                FROM locations AS l LEFT JOIN events AS e ON l.id = location_id WHERE location_id = $1`,
+            [locationId]
+        );
+        const event = results.rows[0];
+        console.log(event);
+        return event;
+        // } else {
+        //     throw new expressError('This service conflicts with an existing service at this location', 401);
+        // }
     }
 
     static async find(eventId) {
@@ -151,11 +150,12 @@ class Event {
         const event = await Event.find(eventId);
         // const currentCapacity = this.currentCapacity++;
         event.currentCapacity++
-        const updateEvent = await db.query(
+        await db.query(
             `UPDATE events SET current_capacity = $1 WHERE id = $2 RETURNING *`,
             [event.currentCapacity, eventId]
         );
-        return updateEvent.rows[0];
+        const updatedEvent = await Event.find(eventId);
+        return updatedEvent.rows[0];
     }
 }
 
