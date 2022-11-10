@@ -7,6 +7,7 @@ const newEventSchema = require('../json_schemas/eventNew.json');
 const eventSearchSchema = require('../json_schemas/eventSearch.json');
 const Event = require('../models/event');
 const Reservation = require('../models/reservation');
+const db = require('../db');
 // const Location = require('../models/location');
 const router = new express.Router();
 
@@ -27,11 +28,13 @@ router.post('/new/:locationId', ensureUserLoggedIn, async (req, res, next) => {
         req.body.currentCapacity = +req.body.currentCapacity;
         req.params.locationId = +req.params.locationId;
         const event = await Event.create(req.body, req.params.locationId);
-        if (!event) return;
-        console.log('res.locals', res.locals);
-        const { userId } = res.locals.user
-        const reservation = await Reservation.new(userId, event.id);
-        return res.status(201).json({ data: { event, reservation } });
+        if (!event) throw new expressError('Error creating event', 400); //specify error 
+        console.log('res.locals', res.locals); //bug res.locals.isAdmin doesn't update to false for admin
+        const { userId } = res.locals.user;
+        console.log('route/events user.id', userId);
+        console.log('route/events event.id', event);
+        const reservation = await Reservation.new(userId, event.id); //bug validation throws err for event id collision.. not factoring a different time of day. improve validation//
+        return res.status(201).json({ data: [{ event }, { reservation }] });
     } catch (err) {
         return next(err)
     }
@@ -75,14 +78,14 @@ router.get(`/`, ensureUserLoggedIn, async (req, res, next) => {
  *   Update event to increment ++currentUser 
  *   Add new reservation for userId to eventId   
  */
-router.patch('/join/:eventId', ensureUserLoggedIn, async (req, res, next) => {
+router.post('/join/:eventId', ensureUserLoggedIn, async (req, res, next) => {
     try {
         console.log(res.locals.user);
         const { userId } = res.locals.user;
         const { eventId } = req.params;
-        const joinEvent = await Event.join(eventId);
+        const newRes = await Reservation.new(userId, eventId);
+        const joinEvent = await Event.join(eventId); //do you need anything in req body? should NOT NEED.
         console.log('userId', userId);
-        const newRes = await Reservation.new(userId, eventId)
         return res.status(200).json({ data: { joinEvent, newRes } });
     } catch (err) {
         return next(err);

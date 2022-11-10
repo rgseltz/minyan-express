@@ -16,7 +16,7 @@ class Event {
             `SELECT id, nick_name FROM locations WHERE id = $1`, [locationId]
         );
         if (!checkLocation.rows[0]) throw new expressError('Invalid location', 404);
-        console.log(currentCapacity);
+        console.log('currentCapacity', currentCapacity);
         console.log(locationId);
 
         //PROBLEM: Overlapping times - how do I convert times and ensure that no two events occur at the same location in same time block? answer: do a sql SELECT search - convert times to numbers? - make sure new event does not coincide with that location at that time.
@@ -147,15 +147,27 @@ class Event {
         return results.rows;
     }
     static async join(eventId) {
-        const event = await Event.find(eventId);
-        // const currentCapacity = this.currentCapacity++;
-        event.currentCapacity++
-        await db.query(
-            `UPDATE events SET current_capacity = $1 WHERE id = $2 RETURNING *`,
-            [event.currentCapacity, eventId]
+        // const event = await Event.find(eventId);
+        // event.currentCapacity++
+        // await db.query(
+        //     `UPDATE events SET current_capacity = $1 WHERE id = $2 RETURNING *`,
+        //     [event.currentCapacity, eventId]
+        // );
+        let eventRes = await db.query(`SELECT * FROM events WHERE id = $1`, [eventId]);
+        let event = eventRes.rows[0];
+        const results = await db.query(
+            `SELECT event_id, COUNT(event_id) AS "currentCapacity" FROM reservations 
+            WHERE event_id = $1 GROUP BY event_id`, [eventId]
         );
-        const updatedEvent = await Event.find(eventId);
-        return updatedEvent.rows[0];
+        event.currentCapacityNew = results.rows[0].currentCapacity;
+        console.log('event', event);
+        const usersQuery = await db.query(
+            `SELECT u.id, u.username, r.event_id FROM users AS u LEFT JOIN reservations AS r ON r.user_id = u.id WHERE r.event_id = $1`, [eventId]
+        );
+        const users = usersQuery.rows.map(u => u.username);
+        event.users = users;
+        console.log(event);
+        return event;
     }
 }
 
