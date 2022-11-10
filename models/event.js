@@ -9,8 +9,8 @@ class Event {
     /**  Creates a new event
      *  accepts data {start time and end time} and    
      */
-    static async create(data, locationId) {
-        let { startTime, endTime, serviceType, currentCapacity } = data;
+    static async create(data) {
+        let { locationId, startTime, endTime, serviceType, currentCapacity } = data;
         currentCapacity ? currentCapacity++ : currentCapacity = 1;
         const checkLocation = await db.query(
             `SELECT id, nick_name FROM locations WHERE id = $1`, [locationId]

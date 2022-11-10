@@ -18,7 +18,7 @@ const router = new express.Router();
  * event should contain {startTime, endTime, date, locationId}
  * should return {startTime, endTime, date, location-handle}
 */
-router.post('/new/:locationId', ensureUserLoggedIn, async (req, res, next) => {
+router.post('/new/', ensureUserLoggedIn, async (req, res, next) => {
     try {
         const validator = jsonschema.validate(req.body, newEventSchema);
         if (!validator) {
@@ -26,7 +26,7 @@ router.post('/new/:locationId', ensureUserLoggedIn, async (req, res, next) => {
             throw new expressError(errorList, 400);
         }
         req.body.currentCapacity = +req.body.currentCapacity;
-        req.params.locationId = +req.params.locationId;
+        // req.params.locationId = +req.params.locationId;
         const event = await Event.create(req.body, req.params.locationId);
         if (!event) throw new expressError('Error creating event', 400); //specify error 
         console.log('res.locals', res.locals); //bug res.locals.isAdmin doesn't update to false for admin

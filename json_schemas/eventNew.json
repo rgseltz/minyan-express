@@ -5,11 +5,20 @@
     "default": {},
     "title": "Root Schema",
     "required": [
+        "locationId",
         "startTime",
         "endTime",
         "serviceType"
     ],
     "properties": {
+        "locationId": {
+            "type": "integer",
+            "default": "",
+            "title": "The locationId Schema",
+            "examples": [
+                "integer"
+            ]
+        },
         "startTime": {
             "type": "string",
             "default": "",
@@ -45,6 +54,7 @@
     },
     "examples": [
         {
+            "locationId": "integer",
             "startTime": "string",
             "endTime": "string",
             "serviceType": "string",
