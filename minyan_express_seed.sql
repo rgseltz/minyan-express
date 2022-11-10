@@ -1,7 +1,9 @@
 -- "test user has the encrypted password of 'password'"
 
-INSERT INTO users (username, password, first_name, last_name, email) 
-VALUES ('testuser', '$2y$04$JI7wHgnq4qEAboSFThgLCeqt2vaNZZbGjOejCHUDnPaPZKiMyeanu', 'test', 'user', 'testuser@email.com');
+INSERT INTO users (username, password, first_name, last_name, email, is_admin) 
+VALUES ('testuser', '$2y$04$JI7wHgnq4qEAboSFThgLCeqt2vaNZZbGjOejCHUDnPaPZKiMyeanu', 'test', 'user', 'testuser@email.com', 'true'),
+('ryboy', '$2a$12$nrkTu2xRHaE4t0cvXWn.SuPNcAoSpIVvYp18k5VeNxNKCCqWPKqy2', 'ry', 'boy', 'ryboy@gmail.com', 'false'),
+('sistaboy', '$2a$12$/C4rsVHf6umTvtGv46Ekf.JeUHg4NwjtOygB6rnFsy.306mo6n6S6', 'sista', 'boy', 'sistaboy@gmail.com', 'false');
 
 -- needs country, make street number optional, add column for notes about location, maybe also room? floor? details
 INSERT INTO locations (nick_name, street_name, street_number, city, zip, is_public, location_capacity_limit, type) 
