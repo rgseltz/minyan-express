@@ -49,6 +49,19 @@ class User {
         );
         return result.rows[0];
     }
+
+    static async findAll() {
+        const results = await db.query(
+            `SELECT id, username,
+                 first_name AS "firstName", 
+                 last_name AS "lastName", 
+                 email, 
+                 is_admin AS "isAdmin"
+             FROM users
+             ORDER BY username`
+        );
+        return results.rows;
+    }
 }
 
 module.exports = User;
