@@ -42,6 +42,13 @@ class User {
         }
         return new expressError('Invalid username/password', 401);
     }
+
+    static async get(username) {
+        const result = await db.query(
+            `SELECT * FROM users WHERE username = $1`, [username]
+        );
+        return result.rows[0];
+    }
 }
 
 module.exports = User;
