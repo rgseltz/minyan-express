@@ -31,7 +31,17 @@ function ensureUserLoggedIn(req, res, next) {
     }
 }
 
-module.exports = { authenticateJWT, ensureUserLoggedIn }
+function ensureCorrectUserLoggedIn(req, res, next) {
+    try {
+        const user = res.locals.user;
+        if (user.username !== req.params.username) throw new expressError('Incorrect user!', 401);
+        return next();
+    } catch (err) {
+        return next(err);
+    }
+}
+
+module.exports = { authenticateJWT, ensureUserLoggedIn, ensureCorrectUserLoggedIn }
 
 
 
