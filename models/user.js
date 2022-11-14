@@ -91,6 +91,7 @@ class User {
                 lastName: "last_name",
                 isAdmin: "is_admin",
             });
+        //Adjust index to account for user.id
         const usernameVarIdx = "$" + (values.length + 1);
 
         const querySql = `UPDATE users
