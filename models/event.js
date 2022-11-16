@@ -73,6 +73,11 @@ class Event {
                 WHERE e.id = $1`, [eventId]
             );
             const event = result.rows[0];
+            const usersQuery = await db.query(
+                `SELECT u.id, u.username, r.event_id FROM users AS u LEFT JOIN reservations AS r ON r.user_id = u.id WHERE r.event_id = $1`, [eventId]
+            );
+            let users = usersQuery.map(u => u.username);
+            event.users = users;
             console.log(event);
             return event;
         } else {
@@ -81,6 +86,10 @@ class Event {
     }
 
     static async findAll(searchParams = {}) {
+        // let usersQuery = await db.query(
+        //     ` SELECT u.id, u.username, MAX(event_id) FROM users as u LEFT JOIN reservations as r ON r.user_id = u.id WHERE event_id > 0 GROUP BY u.username, u.id`
+        // );
+        // let users = usersQuery.rows;
         let query =
             `SELECT 
             l.id AS "locationId",
@@ -95,7 +104,7 @@ class Event {
             e.start_time AS "startTime", 
             e.end_time AS "endTime",
             e.id AS "eventId",
-            e.current_capacity AS currentCapacity 
+            e.current_capacity AS "currentCapacity" 
         FROM locations AS l LEFT JOIN events AS e ON l.id = e.location_id`;
         let whereExpressions = ['e.id > 0'];
         let queryValues = [];
@@ -153,13 +162,16 @@ class Event {
         //     `UPDATE events SET current_capacity = $1 WHERE id = $2 RETURNING *`,
         //     [event.currentCapacity, eventId]
         // );
-        let eventRes = await db.query(`SELECT * FROM events WHERE id = $1`, [eventId]);
+        let eventRes = await db.query(`SELECT id, start_time AS "startTime", end_time AS "endTime", service_type AS "serviceType", location_id AS "locationId", current_capacity AS "currentCapacity", max_capacity AS "maxCapacity" FROM events WHERE id = $1`, [eventId]);
         let event = eventRes.rows[0];
         const results = await db.query(
             `SELECT event_id, COUNT(event_id) AS "currentCapacity" FROM reservations 
             WHERE event_id = $1 GROUP BY event_id`, [eventId]
         );
-        event.currentCapacityNew = results.rows[0].currentCapacity;
+        event.currentCapacityNew = +results.rows[0].currentCapacity;
+        event.currentCapacity = event.currentCapacityNew;
+        delete event.currentCapacityNew;
+        // event.currentCapacity = +results.rows[0].current_capacity;
         console.log('event', event);
         const usersQuery = await db.query(
             `SELECT u.id, u.username, r.event_id FROM users AS u LEFT JOIN reservations AS r ON r.user_id = u.id WHERE r.event_id = $1`, [eventId]
