@@ -44,7 +44,7 @@ class User {
 
     static async get(username) {
         const result = await db.query(
-            `SELECT * FROM users WHERE username = $1`, [username]
+            `SELECT username, first_name AS "firstName", last_name AS "lastName", is_admin AS "isAdmin" FROM users WHERE username = $1`, [username]
         );
         return result.rows[0];
     }
