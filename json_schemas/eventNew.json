@@ -44,7 +44,7 @@
             ]
         },
         "maxCapacity": {
-            "type": "string",
+            "type": "integer",
             "default": "",
             "title": "The maxCapacity Schema",
             "examples": [
