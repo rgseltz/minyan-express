@@ -18,7 +18,7 @@ const router = new express.Router();
  * event should contain {startTime, endTime, date, locationId}
  * should return {startTime, endTime, date, location-handle}
 */
-router.post('/new/', ensureUserLoggedIn, async (req, res, next) => {
+router.post('/new', ensureUserLoggedIn, async (req, res, next) => {
     try {
         const validator = jsonschema.validate(req.body, newEventSchema);
         if (!validator) {
@@ -34,7 +34,7 @@ router.post('/new/', ensureUserLoggedIn, async (req, res, next) => {
         console.log('route/events user.id', userId);
         console.log('route/events event.id', event);
         const reservation = await Reservation.new(userId, event.id); //bug validation throws err for event id collision.. not factoring a different time of day. improve validation//
-        return res.status(201).json({ data: [{ event }, { reservation }] });
+        return res.status(201).json({ data: { event, reservation } });
     } catch (err) {
         return next(err)
     }
