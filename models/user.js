@@ -35,7 +35,7 @@ class User {
         const user = results.rows[0];
         if (!user) throw new expressError('user does not exist', 400);
         const isValid = bcrypt.compare(password, user.password);
-        if (isValid) {
+        if (isValid === true) {
             delete user.password;
             return user;
         }
