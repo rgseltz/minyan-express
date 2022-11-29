@@ -34,12 +34,13 @@ class User {
         );
         const user = results.rows[0];
         if (!user) throw new expressError('user does not exist', 400);
-        const isValid = bcrypt.compare(password, user.password);
+        const isValid = await bcrypt.compare(password, user.password);
+        console.log('isValid?', isValid);
         if (isValid === true) {
             delete user.password;
             return user;
         }
-        return new expressError('Invalid username/password', 401);
+        throw new expressError('Invalid username/password', 401);
     }
 
     static async get(username) {
